@@ -1,7 +1,6 @@
 {
   "main": "./index.js",
   "dependencies": {
-    "ws": "^0.7.2",
-    "yargs": "^3.15.0"
+    "ws": "^0.7.2"
   }
 }

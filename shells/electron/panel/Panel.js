@@ -16,6 +16,7 @@ var Bridge = require('../../../agent/Bridge');
 var Container = require('../../../frontend/Container');
 var NativeStyler = require('../../../plugins/ReactNativeStyle/ReactNativeStyle');
 var Store = require('../../../frontend/Store');
+var websocketConnect = require('../../../backend/websocket-connect');
 
 var keyboardNav = require('../../../frontend/keyboardNav');
 

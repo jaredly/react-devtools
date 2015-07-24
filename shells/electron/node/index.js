@@ -14,26 +14,52 @@ var ws = require('ws');
 var fs = require('fs');
 var path = require('path');
 
-var socket = ws.connect('ws://localhost:8081/devtools');
+window.connectToSocket = function () {
+  var socket = ws.connect('ws://localhost:8081/devtools');
 
-socket.onmessage = initialMessage;
+  socket.onmessage = initialMessage;
 
-function initialMessage(evt) {
-  if (evt.data === 'attach:agent') {
-    initialize();
+  socket.onerror = function (err) {
+    window.onDisconnected();
+    console.log('error connection', err);
+  };
+  socket.onclose = function () {
+    window.onDisconnected();
+    console.log('error things');
+  };
+
+  function initialMessage(evt) {
+    if (evt.data === 'attach:agent') {
+      initialize(socket);
+    }
   }
 }
 
-socket.onerror = function (err) {
-  window.onDisconnected();
-  console.log('error connection', err);
-};
-socket.onclose = function () {
-  window.onDisconnected();
-  console.log('error things');
+window.startServer = function () {
+  var server = new ws.Server({port: 8097})
+  var connected = false;
+  server.on('connection', function (socket) {
+    if (connected) {
+      console.warn('only one connection allowed at a time');
+      socket.close();
+      return;
+    }
+    connected = true;
+    socket.onerror = function (err) {
+      connected = false;
+      window.onDisconnected();
+      console.log('error connection', err);
+    };
+    socket.onclose = function () {
+      connected = false;
+      window.onDisconnected();
+      console.log('error things');
+    };
+    initialize(socket);
+  });
 };
 
-function initialize() {
+function initialize(socket) {
   fs.readFile(path.join(__dirname, '/../build/backend.js'), function (err, backendScript) {
     if (err) {
       return console.error('failed to load...', err);
@@ -49,6 +75,7 @@ function initialize() {
         return;
       }
       if (data.$open) {
+        console.log('opneed');
         return; // ignore
       }
       listeners.forEach(function (fn) {fn(data); });

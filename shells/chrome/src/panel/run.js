@@ -10,6 +10,8 @@
  */
 'use strict';
 
+var globalHook = require('../../../../backend/GlobalHook');
+globalHook(window);
 var Panel = require('./Panel');
 var React = require('react');
 
