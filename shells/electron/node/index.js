@@ -42,7 +42,7 @@ function onDisconnected() {
   node.innerHTML = '<h2 id="waiting">Waiting for a connection from React Native</h2>';
 };
 
-function initialize() {
+function initialize(socket) {
   fs.readFile(path.join(__dirname, '/../build/backend.js'), function (err, backendScript) {
     if (err) {
       return console.error('failed to load...', err);
@@ -62,6 +62,7 @@ function initialize() {
         return;
       }
       if (data.$open) {
+        console.log('opneed');
         return; // ignore
       }
       listeners.forEach(function (fn) {fn(data); });
