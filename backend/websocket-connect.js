@@ -10,10 +10,11 @@
  */
 'use strict';
 
-function websocketConnect(uri: string) {
+function websocketConnect(uri: string, WebSocket: () => Object) {
+  WebSocket = WebSocket || window.WebSocket;
   var messageListeners = [];
   var closeListeners = [];
-  var ws = new window.WebSocket(uri);
+  var ws = new WebSocket(uri);
   // this is accessed by the eval'd backend code
   var FOR_BACKEND = { // eslint-disable-line no-unused-vars
     wall: {

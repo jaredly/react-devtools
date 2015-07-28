@@ -19,20 +19,24 @@ class TabbedPane {
     tabs: {[key: string]: () => ReactElement},
     selected: string,
     setSelectedTab: (name: string) => void,
-    onInspect: () => void,
+    onInspectToggle: () => void,
     onSettings: () => void,
   };
 
   render() {
     var tabs = Object.keys(this.props.tabs);
+    var inspectStyle = styles.icon;
+    if (this.props.inspecting) {
+      inspectStyle = assign({}, styles.icon, styles.inspectingIcon);
+    }
     return (
       <div style={styles.container}>
         <ul style={styles.tabs}>
-          <li onClick={this.props.onInspect} style={styles.pin}>
-            <i>II</i>
+          <li onClick={this.props.onInspectToggle} style={styles.pin}>
+            <i className="material-icons" style={inspectStyle}>search</i>
           </li>
           <li onClick={this.props.onSettings} style={styles.pin}>
-            <i>SS</i>
+            <i className="material-icons" style={styles.icon}>settings</i>
           </li>
           {tabs.map((name, i) => {
             var style = styles.tab;
@@ -70,7 +74,7 @@ var styles = {
     backgroundColor: '#eee',
     borderBottom: '1px solid rgb(163, 163, 163)',
     margin: 0,
-    padding: 0,
+    padding: '0 2px',
   },
   tab: {
     padding: '2px 4px',
@@ -92,15 +96,26 @@ var styles = {
   },
   pin: {
     padding: '0 5px',
+    cursor: 'pointer',
+  },
+  icon: {
+    fontSize: 18,
+    position: 'relative',
+    top: 2,
+  },
+  inspectingIcon: {
+    color: 'blue',
   },
 };
 
 module.exports = decorate({
-  listeners: () => ['selectedTab'],
+  listeners: () => ['selectedTab', 'inspecting'],
   props(store) {
     return {
       selected: store.selectedTab,
       setSelectedTab: name => store.setSelectedTab(name),
+      inspecting: store.inspecting,
+      onInspectToggle: () => store.toggleInspection(),
     }
   },
 }, TabbedPane);
