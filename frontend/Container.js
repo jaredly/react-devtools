@@ -16,6 +16,8 @@ var React = require('react');
 var SearchPane = require('./SearchPane');
 var SplitPane = require('./SplitPane');
 var Settings = require('./Settings');
+var TabbedPane = require('./TabbedPane');
+
 var decorate = require('./decorate');
 
 import type MenuItem from './ContextMenu';
@@ -60,11 +62,8 @@ class Container extends React.Component {
   }
 
   render(): ReactElement {
-    if (this.state.showSettings) {
-      return <Settings settings={this.state.settings} onClose={() => this.setState({showSettings: false})} />;
-    }
-    return (
-      <div style={styles.container}>
+    var tabs = {
+      Elements: () => (
         <SplitPane
           initialWidth={300}
           win={this.props.win}
@@ -77,9 +76,28 @@ class Container extends React.Component {
             </div>
           )}
         />
+      ),
+    };
+    if (this.props.extraTabs) {
+      for (var name in this.props.extraTabs) {
+        tabs[name] = this.props.extraTabs[name];
+      }
+    }
+    return (
+      <div style={styles.container}>
+        <TabbedPane
+          tabs={tabs}
+        />
         <ContextMenu itemSources={[DEFAULT_ITEMS, this.props.menuItems]} />
       </div>
     );
+    /*
+    if (this.state.showSettings) {
+      return <Settings settings={this.state.settings} onClose={() => this.setState({showSettings: false})} />;
+    }
+    return (
+    );
+    */
   }
 }
 
