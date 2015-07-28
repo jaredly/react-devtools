@@ -144,6 +144,7 @@ class Store extends EventEmitter {
       }
       this._revealDeep(id);
       this.selectTop(this.skipWrapper(id), quiet);
+      this.setSelectedTab('Elements');
     });
 
     this._establishConnection();
@@ -155,6 +156,9 @@ class Store extends EventEmitter {
   }
 
   setSelectedTab(name: string): void {
+    if (this.selectedTab === name) {
+      return;
+    }
     this.selectedTab = name;
     this.emit('selectedTab');
   }
