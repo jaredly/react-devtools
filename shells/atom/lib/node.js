@@ -9,37 +9,69 @@
  */
 'use strict';
 
-var JsonSocket = require('../../electron/node_modules/json-socket');
-var net = require('net');
+// this is not compiled by babel / webpack
+var ws = require('ws');
+var fs = require('fs');
+var path = require('path');
 
-module.exports = function (onConnected) {
-  var socket = new JsonSocket(new net.Socket());
+module.exports = function (onConnected, onDisconnected) {
 
-  socket.on('connect', function () {
-    console.log('connected!!');
-    /*
-    socket.on('message', function (data) {
-      console.log('<<--' + JSON.stringify(data));
-    });
-    */
+  var socket = ws.connect('ws://localhost:8081/devtools');
 
-    var wall = {
-      listen(fn) {
-        socket.on('message', fn);
-      },
-      send(data) {
-        // console.log('-->>' + JSON.stringify(data));
-        socket.sendMessage(data);
-      },
-      disconnect() {
-        socket.end();
-      },
-    };
+  socket.onmessage = initialMessage;
 
-    setTimeout(function () {
+  function initialMessage(evt) {
+    if (evt.data === 'attach:agent') {
+      initialize();
+    }
+  }
+
+  socket.onerror = function (err) {
+    onDisconnected();
+    console.log('error connection', err);
+  };
+  socket.onclose = function () {
+    onDisconnected();
+    console.log('error things');
+  };
+
+  function initialize() {
+    fs.readFile(path.join(__dirname, '/build/backend.js'), function (err, backendScript) {
+      if (err) {
+        return console.error('failed to load...', err);
+      }
+      socket.send('eval:' + backendScript.toString('utf8'));
+      socket.onmessage = function (evt) {
+        // console.log('<<--', evt.data);
+        var data = JSON.parse(evt.data);
+        if (data.$close || data.$error) {
+          console.log('Closing or Erroring');
+          onDisconnected();
+          socket.onmessage = initialMessage;
+          return;
+        }
+        if (data.$open) {
+          return; // ignore
+        }
+        listeners.forEach(function (fn) {fn(data); });
+      };
+      console.log('connected to react native');
+      var listeners = [];
+
+      var wall = {
+        listen(fn) {
+          listeners.push(fn);
+        },
+        send(data) {
+          // console.log('-->>' + JSON.stringify(data));
+          socket.send(JSON.stringify(data));
+        },
+        disconnect() {
+          socket.close();
+        },
+      };
+
       onConnected(wall);
-    }, 500);
-  });
-
-  socket.connect(8011); // , 'localhost');
+    });
+  }
 };
