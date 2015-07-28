@@ -29,16 +29,23 @@ class TabbedPane {
     if (this.props.inspecting) {
       inspectStyle = assign({}, styles.icon, styles.inspectingIcon);
     }
+    var settingsTab = styles.pin;
+    if (this.props.selected === 'Settings') {
+      settingsTab = assign({}, styles.pin, styles.selectedTab, styles.selectedPin);
+    }
     return (
       <div style={styles.container}>
         <ul style={styles.tabs}>
           <li onClick={this.props.onInspectToggle} style={styles.pin}>
             <i className="material-icons" style={inspectStyle}>search</i>
           </li>
-          <li onClick={this.props.onSettings} style={styles.pin}>
+          <li onClick={() => this.props.setSelectedTab('Settings')} style={settingsTab}>
             <i className="material-icons" style={styles.icon}>settings</i>
           </li>
           {tabs.map((name, i) => {
+            if (name === 'Settings') {
+              return;
+            }
             var style = styles.tab;
             if (name === this.props.selected) {
               style = assign({}, style, styles.selectedTab);
@@ -97,6 +104,7 @@ var styles = {
   pin: {
     padding: '0 5px',
     cursor: 'pointer',
+    borderLeft: '1px solid transparent',
   },
   icon: {
     fontSize: 18,
@@ -105,6 +113,9 @@ var styles = {
   },
   inspectingIcon: {
     color: 'blue',
+  },
+  selectedPin: {
+    borderLeft: '1px solid rgb(163, 163, 163)',
   },
 };
 

@@ -65,6 +65,9 @@ class Container extends React.Component {
 
   render(): ReactElement {
     var tabs = {
+      Settings: () => (
+        <Settings settings={this.state.settings} onClose={() => this.setState({showSettings: false})} />
+      ),
       Elements: () => (
         <SplitPane
           initialWidth={300}
@@ -95,7 +98,6 @@ class Container extends React.Component {
     );
     /*
     if (this.state.showSettings) {
-      return <Settings settings={this.state.settings} onClose={() => this.setState({showSettings: false})} />;
     }
     return (
     );

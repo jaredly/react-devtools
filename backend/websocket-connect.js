@@ -10,7 +10,7 @@
  */
 'use strict';
 
-function websocketConnect(uri: string, WebSocket: () => Object) {
+function websocketConnect(uri: string, WebSocket?: (val: string) => Object) {
   WebSocket = WebSocket || window.WebSocket;
   var messageListeners = [];
   var closeListeners = [];

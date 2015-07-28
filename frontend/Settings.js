@@ -15,8 +15,14 @@ var assign = require('object-assign');
 var websocketConnect = require('../backend/websocket-connect');
 var Highlighter = require('./Highlighter/Highlighter');
 
+type Props = {
+  settings: Object,
+};
+
 class Settings extends React.Component {
-  constructor(props: Object) {
+  props: Props;
+
+  constructor(props: Props) {
     super(props);
     this.state = {
       ...props.settings,
@@ -57,8 +63,6 @@ class Settings extends React.Component {
         Devtools port number:
         <input type="number" value={this.state.debugPort} onChange={e => this.setState({debugPort: e.target.value})} />
         <button disabled={this.state.connectedToDevtools} onClick={() => this.connectDebugger()}>Connect to devtools</button>
-        <br/>
-        <button onClick={this.props.onClose}>Close Settings</button>
       </div>
     );
   }
