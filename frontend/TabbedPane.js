@@ -100,6 +100,7 @@ var styles = {
   body: {
     flex: 1,
     display: 'flex',
+    minHeight: 0,
   },
   pin: {
     padding: '0 5px',
