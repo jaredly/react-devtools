@@ -74,11 +74,7 @@ class Container extends React.Component {
           win={this.props.win}
           left={() => <SearchPane win={this.props.win} reload={this.props.reload} />}
           right={() => (
-            <div>
-              <button onClick={() => this.props.startInspecting()}>Inspect</button>
-              <button onClick={() => this.setState({showSettings: true})}>Settings</button>
-              <PropState extraPanes={this.props.extraPanes} />
-            </div>
+            <PropState extraPanes={this.props.extraPanes} />
           )}
         />
       ),
