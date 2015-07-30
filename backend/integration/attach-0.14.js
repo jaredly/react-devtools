@@ -12,8 +12,8 @@
 require('es6-map/implement');
 require('es6-set/implement');
 
-var test = require('tape');
-var makeReporter = require('./reporter');
+//var test = require('tape');
+//var makeReporter = require('./reporter');
 var spy = require('./spy');
 
 var attachRenderer = require('../attachRenderer');
@@ -21,7 +21,7 @@ var globalHook = require('../GlobalHook.js');
 globalHook(window);
 
 if (!window.IS_TRAVIS) {
-  makeReporter(test.createStream({objectMode: true}));
+  //makeReporter(test.createStream({objectMode: true}));
 }
 
 var React = require('./v0.14/node_modules/react');
@@ -82,33 +82,31 @@ var SimpleApp = React.createClass({
 
 // Mounting and Unmounting
 
-test('should work with plain DOM node', t => {
+it('should work with plain DOM node', t => {
   var hook = new EventEmitter();
   var handlers = setup(hook);
 
   wrapElement(hook, <div>Plain</div>);
 
-  t.ok(handlers.root.calledOnce, 'One root');
+  expect(handlers.root.calledOnce).toBeTruthy('One root');
   // the root-level wrapper, and the div
-  t.equal(handlers.mount.callCount, 2, 'Two mounts');
-  t.notOk(handlers.unmount.called, 'No unmounts');
-  t.end();
+  expect(handlers.mount.callCount).toEqual(2, 'Two mounts');
+  expect(handlers.unmount.called).not.toBeTruthy('No unmounts');
 });
 
-test('should work with simple composite component', t => {
+it('should work with simple composite component', t => {
   var hook = new EventEmitter();
   var handlers = setup(hook);
 
   wrapElement(hook, <SimpleApp/>);
 
-  t.ok(handlers.root.calledOnce, 'One root');
+  expect(handlers.root.calledOnce).toBeTruthy('One root');
   // the root-level wrapper, the composite component, and the div
-  t.equal(handlers.mount.callCount, 3, 'Three mounts');
-  t.notOk(handlers.unmount.called, 'No unmounts');
-  t.end();
+  expect(handlers.mount.callCount).toEqual(3, 'Three mounts');
+  expect(handlers.unmount.called).not.toBeTruthy('No unmounts');
 });
 
-test('attaching late should work', t => {
+it('attaching late should work', t => {
   var hook = new EventEmitter();
   var handlers = setup(hook);
 
@@ -118,19 +116,18 @@ test('attaching late should work', t => {
   var extras = attachRenderer(hook, 'abc', renderer);
   extras.walkTree((component, data) => handlers.mount({component, data}), component => handlers.root({component}));
 
-  t.equal(handlers.root.callCount, 1, 'One root');
+  expect(handlers.root.callCount).toEqual(1, 'One root');
   // the root-level wrapper, the composite component, and the div
-  t.equal(handlers.mount.callCount, 3, 'Three mounts');
-  t.notOk(handlers.unmount.called, 'No unmounts');
+  expect(handlers.mount.callCount).toEqual(3, 'Three mounts');
+  expect(handlers.unmount.called).not.toBeTruthy('No unmounts');
 
   // cleanup after
   extras.cleanup();
   React.unmountComponentAtNode(node);
 
-  t.end();
 });
 
-test('should unmount everything', t => {
+it('should unmount everything', t => {
   var hook = new EventEmitter();
   var els = new Set();
   hook.on('mount', ({element}) => els.add(element));
@@ -139,15 +136,14 @@ test('should unmount everything', t => {
   wrapRender(hook, () => {
     var node = document.createElement('div');
     React.render(<SimpleApp/>, node);
-    t.ok(els.size > 0, 'Some elements');
+    expect(els.size > 0).toBeTruthy('Some elements');
     React.unmountComponentAtNode(node);
   });
 
-  t.equal(els.size, 0, 'Everything unmounted');
-  t.end();
+  expect(els.size).toEqual(0, 'Everything unmounted');
 });
 
-test('should register two roots', t => {
+it('should register two roots', t => {
   var hook = new EventEmitter();
   var handlers = setup(hook);
 
@@ -160,11 +156,10 @@ test('should register two roots', t => {
     React.unmountComponentAtNode(node2);
   });
 
-  t.equal(handlers.root.callCount, 2, 'Two roots');
-  t.end();
+  expect(handlers.root.callCount).toEqual(2, 'Two roots');
 });
 
-test('Double render', t => {
+it('Double render', t => {
   var hook = new EventEmitter();
   var handlers = setup(hook);
   var els = new Set();
@@ -174,18 +169,17 @@ test('Double render', t => {
   wrapNode(node => {
     wrapRender(hook, () => {
       React.render(<SimpleApp/>, node);
-      t.equal(handlers.update.callCount, 0, 'No updates');
+      expect(handlers.update.callCount).toEqual(0, 'No updates');
       React.render(<SimpleApp/>, node);
     });
   });
 
-  t.equal(handlers.root.callCount, 1, 'One root');
-  t.ok(handlers.update.callCount > 0, 'Updates');
-  t.equal(els.size, 3, 'Only three mounted');
-  t.end();
+  expect(handlers.root.callCount).toEqual(1, 'One root');
+  expect(handlers.update.callCount > 0).toBeTruthy('Updates');
+  expect(els.size).toEqual(3, 'Only three mounted');
 });
 
-test('Plain text nodes', t => {
+it('Plain text nodes', t => {
   var hook = new EventEmitter();
   var {roots, els} = tracker(hook);
 
@@ -203,14 +197,13 @@ test('Plain text nodes', t => {
 
   var contents = ['one', 'two', 'three'];
 
-  t.equals(texts.length, 3, '3 text children');
+  expect(texts.length).toEqual(3, '3 text children');
 
   texts.forEach((comp, i) => {
-    t.equals(els.get(comp)[0].text, contents[i], i + ') Text content correct');
-    t.equals(els.get(comp)[0].nodeType, 'Text', i + ') NodeType = text');
+    expect(els.get(comp)[0].text).toEqual(contents[i], i + ') Text content correct');
+    expect(els.get(comp)[0].nodeType).toEqual('Text', i + ') NodeType = text');
   });
 
-  t.end();
 });
 
 // State updating
@@ -230,7 +223,7 @@ function wrapNode(fn) {
   React.unmountComponentAtNode(node);
 }
 
-test('State update', t => {
+it('State update', t => {
   var hook = new EventEmitter();
   var {roots, els} = tracker(hook);
 
@@ -246,19 +239,18 @@ test('State update', t => {
   var div = els.get(composite)[0].children[0];
 
   var divUpdates = els.get(div);
-  t.equal(divUpdates[0].nodeType, 'Native', '[Div] Native type');
-  t.equal(divUpdates[0].name, 'div', 'Named "div"');
-  t.equal(divUpdates[0].children, 'Not updated', 'At first, not updated');
-  t.equal(divUpdates[1].children, 'Updated', 'Then, updated');
+  expect(divUpdates[0].nodeType).toEqual('Native', '[Div] Native type');
+  expect(divUpdates[0].name).toEqual('div', 'Named "div"');
+  expect(divUpdates[0].children).toEqual('Not updated', 'At first, not updated');
+  expect(divUpdates[1].children).toEqual('Updated', 'Then, updated');
   var updates = els.get(composite);
-  t.equal(updates[0].nodeType, 'Composite', '[App] Composite type');
-  t.equal(updates[0].name, 'StateApp', 'Named "StateApp"');
-  t.equal(updates[0].state.updated, false, 'State[0] updated=false');
-  t.equal(updates[1].state.updated, true, 'State[1] updated=true');
-  t.end();
+  expect(updates[0].nodeType).toEqual('Composite', '[App] Composite type');
+  expect(updates[0].name).toEqual('StateApp', 'Named "StateApp"');
+  expect(updates[0].state.updated).toEqual(false, 'State[0] updated=false');
+  expect(updates[1].state.updated).toEqual(true, 'State[1] updated=true');
 });
 
-test('Props update', t => {
+it('Props update', t => {
   var hook = new EventEmitter();
   var {roots, els} = tracker(hook);
 
@@ -284,8 +276,7 @@ test('Props update', t => {
   var simple = els.get(composite)[0].children[0];
 
   var updates = els.get(simple);
-  t.equal(updates[0].props.pass, false, 't=0, prop=false');
-  t.equal(updates[1].props.pass, true, 't=1, prop=true');
-  t.equal(updates[2].props.pass, 100, 't=2, prop=100');
-  t.end();
+  expect(updates[0].props.pass).toEqual(false, 't=0, prop=false');
+  expect(updates[1].props.pass).toEqual(true, 't=1, prop=true');
+  expect(updates[2].props.pass).toEqual(100, 't=2, prop=100');
 });
