@@ -13,7 +13,7 @@
 var React = require('react');
 var assign = require('object-assign');
 var websocketConnect = require('../backend/websocket-connect');
-var Highlighter = require('./Highlighter/Highlighter');
+var setupHighlighter = require('./Highlighter/setup');
 
 type Props = {
   settings: Object,
@@ -37,15 +37,7 @@ class Settings extends React.Component {
     }
     websocketConnect('ws://localhost:' + this.state.debugPort + '/');
     window.__REACT_DEVTOOLS_GLOBAL_HOOK__.on('react-devtools', agent => {
-      var hl = new Highlighter(window, node => {
-        agent.selectFromDOMNode(node);
-      });
-      agent.on('highlight', data => hl.highlight(data.node, data.name));
-      agent.on('highlightMany', nodes => hl.highlightMany(nodes));
-      agent.on('hideHighlight', () => hl.hideHighlight());
-      agent.on('startInspecting', () => hl.startInspecting());
-      agent.on('stopInspecting', () => hl.stopInspecting());
-      agent.on('shutdown', () => hl.remove());
+      setupHighlighter(agent);
     });
     this.setState({connectedToDevtools: true});
   }
