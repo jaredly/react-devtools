@@ -47,19 +47,10 @@ class Container extends React.Component {
 
   constructor(props: Object) {
     super(props);
-    var settings = DEFAULT_SETTINGS;
-    /*
-    try {
-      var raw = localStorage.getItem('reactDevtoolsSettings');
-      if (raw) {
-        settings = JSON.parse(raw);
-      }
-    } catch (e) {
-    }
-    */
+    // TODO(jared): save settings to localstorage?
     this.state = {
       showSettings: false,
-      settings,
+      settings: DEFAULT_SETTINGS,
     };
   }
 
