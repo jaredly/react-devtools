@@ -28,7 +28,7 @@ type EventPayload = {
 };
 
 // $FlowFixMe disjoint unions don't seem to be working
-type PayloadType = {
+export type PayloadType = {
   type: 'inspect',
   id: string,
   path: Array<string>,

@@ -1,0 +1,33 @@
+html {
+    display: flex;
+    font-family: sans-serif;
+}
+body {
+    margin: 0;
+    padding: 0;
+    flex: 1;
+    display: flex;
+}
+#container {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: white;
+}
+#logs {
+    position: fixed;
+    top: 0;
+    left: 0;
+    white-space: pre;
+}
+#waiting {
+    text-align: center;
+    font-family: sans-serif;
+    flex: 1;
+    padding: 30px;
+    color: #aaa;
+}
+
