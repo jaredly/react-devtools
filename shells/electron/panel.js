@@ -105,4 +105,32 @@ function connectToPackager() {
   };
 }
 
-connectToPackager();
+/**
+ * When the Electron app is running in "server mode"
+ */
+function startServer() {
+  var server = new ws.Server({port: 8097})
+  var connected = false;
+  server.on('connection', function (socket) {
+    if (connected) {
+      console.warn('only one connection allowed at a time');
+      socket.close();
+      return;
+    }
+    connected = true;
+    socket.onerror = function (err) {
+      connected = false;
+      onDisconnected();
+      console.log('Error with websocket connection', err);
+    };
+    socket.onclose = function () {
+      connected = false;
+      onDisconnected();
+      console.log('Connection to RN closed');
+    };
+    initialize(socket);
+  });
+};
+
+window.connectToPackager = connectToPackager;
+window.startServer = startServer;
