@@ -127,14 +127,6 @@ var DEFAULT_ITEMS = {
   },
 };
 
-var WrappedContainer = decorate({
-  props(store) {
-    return {
-      startInspecting: () => store._bridge.send('startInspecting'),
-    };
-  },
-}, Container);
-
 var styles = {
   container: {
     flex: 1,
@@ -143,4 +135,4 @@ var styles = {
   },
 };
 
-module.exports = WrappedContainer;
+module.exports = Container;
