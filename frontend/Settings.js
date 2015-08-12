@@ -13,8 +13,14 @@
 var React = require('react');
 var assign = require('object-assign');
 
+type Props = {
+  settings: Object,
+};
+
 class Settings extends React.Component {
-  constructor(props: Object) {
+  props: Props;
+
+  constructor(props: Props) {
     super(props);
     this.state = {
       ...props.settings,
@@ -26,7 +32,6 @@ class Settings extends React.Component {
       <div style={styles.container}>
         Put your settings here!
         <br/>
-        <button onClick={this.props.onClose}>Close Settings</button>
       </div>
     );
   }
