@@ -238,6 +238,7 @@ class Bridge {
   once(evt: string, fn: AnyFn) {
     var self = this;
     var listener = function () {
+      console.log('Once');
       fn.apply(this, arguments);
       self.off(evt, listener);
     };
