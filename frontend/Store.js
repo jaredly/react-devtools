@@ -91,6 +91,7 @@ class Store extends EventEmitter {
   hovered: ?ElementID;
   isBottomTagSelected: boolean;
   roots: List;
+  inspecting: boolean;
   searchRoots: ?List;
   searchText: string;
   selectedTab: string;
@@ -117,6 +118,7 @@ class Store extends EventEmitter {
     this.isBottomTagSelected = false;
     this.searchText = '';
     this.capabilities = {};
+    this.inspecting = false;
 
     // for debugging
     window.store = this;
@@ -138,6 +140,10 @@ class Store extends EventEmitter {
     this._bridge.on('update', (data) => this._updateComponent(data));
     this._bridge.on('unmount', id => this._unmountComponenent(id));
     this._bridge.on('select', ({id, quiet}) => {
+      if (this.inspecting) {
+        this.inspecting = false;
+        this.emit('inspecting');
+      }
       this._revealDeep(id);
       this.selectTop(this.skipWrapper(id), quiet);
       this.setSelectedTab('Elements');
@@ -157,6 +163,30 @@ class Store extends EventEmitter {
     }
     this.selectedTab = name;
     this.emit('selectedTab');
+  }
+
+  startInspecting() {
+    if (!this.inspecting) {
+      this.inspecting = true;
+      this._bridge.send('startInspecting')
+      this.emit('inspecting');
+    }
+  }
+
+  stopInspecting() {
+    if (this.inspecting) {
+      this.inspecting = false;
+      this._bridge.send('stopInspecting')
+      this.emit('inspecting');
+    }
+  }
+
+  toggleInspection() {
+    if (this.inspecting) {
+      this.stopInspecting();
+    } else {
+      this.startInspecting();
+    }
   }
 
   // TODO(jared): get this working for react native
