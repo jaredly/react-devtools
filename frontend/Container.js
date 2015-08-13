@@ -15,6 +15,7 @@ var PropState = require('./PropState');
 var React = require('react');
 var SearchPane = require('./SearchPane');
 var SplitPane = require('./SplitPane');
+var Settings = require('./Settings');
 var TabbedPane = require('./TabbedPane');
 
 import type MenuItem from './ContextMenu';
@@ -38,6 +39,7 @@ class Container extends React.Component {
 
   render(): ReactElement {
     var tabs = {
+      Settings: () => <Settings />,
       Elements: () => (
         <SplitPane
           initialWidth={300}
