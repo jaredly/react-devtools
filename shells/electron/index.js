@@ -8,8 +8,11 @@
  */
 'use strict';
 
+var argv = require('yargs').argv;
 var app = require('app');  // Module to control application life.
 var BrowserWindow = require('browser-window');  // Module to create native browser window.
+
+var startServer = !!argv.server;
 
 var mainWindow = null;
 
@@ -23,6 +26,10 @@ app.on('ready', function() {
 
   // and load the index.html of the app.
   mainWindow.loadUrl('file://' + __dirname + '/index.html'); // eslint-disable-line no-path-concat
+
+  mainWindow.webContents.on('did-finish-load', function() {
+    mainWindow.webContents.executeJavaScript(startServer ? 'window.startServer()' : 'window.connectToSocket()');
+  });
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function() {

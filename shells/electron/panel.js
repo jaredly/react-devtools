@@ -9,6 +9,9 @@
  */
 'use strict';
 
+var chalk = require('chalk');
+chalk.enabled = true;
+var ip = require('ip');
 var ws = require('ws');
 var fs = require('fs');
 var path = require('path');
@@ -89,6 +92,7 @@ function initialize(socket) {
  * This is the normal mode, where it connects to the react native packager
  */
 function connectToPackager() {
+  console.log('trying to connect');
   var socket = ws.connect('ws://localhost:8081/devtools');
   socket.onmessage = evt => {
     if (evt.data === 'attach:agent') {
@@ -109,7 +113,9 @@ function connectToPackager() {
  * When the Electron app is running in "server mode"
  */
 function startServer() {
-  var server = new ws.Server({port: 8097})
+  console.log('waiting for a connection');
+  var httpServer = require('http').createServer()
+  var server = new ws.Server({server: httpServer})
   var connected = false;
   server.on('connection', function (socket) {
     if (connected) {
@@ -129,6 +135,24 @@ function startServer() {
       console.log('Connection to RN closed');
     };
     initialize(socket);
+  });
+
+  var embedFile = require('fs').readFileSync(__dirname + '/embed/build/embed.js');
+  httpServer.on('request', (req, res) => {
+    res.end(embedFile);
+  });
+  httpServer.listen(8097, () => {
+    console.log(chalk.red(`
+--------------
+React Devtools
+--------------`) + `
+
+listening on port 8097.
+Add ${chalk.yellow('<script src="http://localhost:8097"></script>')}
+or ${chalk.yellow('<script src="http://' + ip.address() + ':8097"></script>')}
+to the top of the page you want to debug.
+
+`)
   });
 };
 

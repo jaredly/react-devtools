@@ -16,4 +16,6 @@
 /backend/integration/v0.14/node_modules
 /backend/integration/build
 /shells/firefox/*.xpi
+shells/electron/embed/build
+shells/electron/embed/test/build
 npm-debug.log
