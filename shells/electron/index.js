@@ -28,7 +28,7 @@ app.on('ready', function() {
   mainWindow.loadUrl('file://' + __dirname + '/index.html'); // eslint-disable-line no-path-concat
 
   mainWindow.webContents.on('did-finish-load', function() {
-    mainWindow.webContents.executeJavaScript(startServer ? 'window.startServer()' : 'window.connectToSocket()');
+    mainWindow.webContents.executeJavaScript(startServer ? 'window.startServer()' : 'window.connectToPackager()');
   });
 
   // Emitted when the window is closed.

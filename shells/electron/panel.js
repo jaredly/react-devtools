@@ -93,7 +93,7 @@ function initialize(socket) {
  */
 function connectToPackager() {
   console.log('trying to connect');
-  var socket = ws.connect('ws://localhost:8081/devtools');
+  var socket = ws.connect('ws://localhost:8081/debugger-proxy');
   socket.onmessage = evt => {
     if (evt.data === 'attach:agent') {
       initialize(socket);
