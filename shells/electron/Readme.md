@@ -11,7 +11,7 @@ This electron-based app can be used in a number of applications that are ourside
 You'll need webpack, and [electron](http://electron.atom.io/#get-started) (`npm install electron-prebuilt -g`).
 
 ## Using
-You'll need to run `npm install` and `webpack` to get everything started.
+You'll need to run `npm install` and `webpack` (also in the embed folder) to get everything started.
 
 ### With React Native
 

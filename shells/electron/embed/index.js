@@ -10,10 +10,10 @@
  */
 'use strict';
 
-var globalHook = require('../backend/GlobalHook');
+var globalHook = require('../../../backend/GlobalHook');
 globalHook(window);
-var websocketConnect = require('../backend/websocket-connect');
-var setupHighlighter = require('../frontend/Highlighter/setup');
+var websocketConnect = require('../../../backend/websocket-connect');
+var setupHighlighter = require('../../../frontend/Highlighter/setup');
 
 websocketConnect('ws://localhost:8097/');
 window.__REACT_DEVTOOLS_GLOBAL_HOOK__.on('react-devtools', agent => {
