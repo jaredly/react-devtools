@@ -16,7 +16,7 @@ var ws = require('ws');
 var fs = require('fs');
 var path = require('path');
 
-var globalHook = require('../../backend/GlobalHook');
+var globalHook = require('../../backend/installGlobalHook');
 globalHook(window);
 
 var Panel = require('../../frontend/Panel');

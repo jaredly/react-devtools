@@ -10,7 +10,7 @@
  */
 'use strict';
 
-var globalHook = require('../../../backend/GlobalHook');
+var globalHook = require('../../../backend/installGlobalHook');
 globalHook(window);
 var websocketConnect = require('../../../backend/websocket-connect');
 var setupHighlighter = require('../../../frontend/Highlighter/setup');

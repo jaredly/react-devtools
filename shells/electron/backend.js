@@ -28,7 +28,7 @@ if (!window.performance) {
   };
 }
 
-var globalHook = require('../../backend/GlobalHook.js');
+var globalHook = require('../../backend/installGlobalHook.js');
 globalHook(window);
 
 var Agent = require('../../agent/Agent');
