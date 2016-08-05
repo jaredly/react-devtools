@@ -54,7 +54,8 @@ function websocketConnect(uri: string, WebSocket?: (val: string) => Object) {
       // FOR_BACKEND is used by the eval'd code
       eval(text); // eslint-disable-line no-eval
     } catch (e) {
-      console.error('Failed to eval' + e.message);
+      console.error('Failed to eval' + e.message + '\n' + e.stack);
+      debugger
       return;
     }
     ws.onmessage = handleMessage;
